@@ -3,9 +3,6 @@
   "version": "1.0.0",
   "description": "",
   "main": "app.js",
-  "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
-  },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/dwgill/Steam-with-Friends.git"
@@ -30,5 +27,14 @@
     "less": "^3.0.0-alpha.3",
     "load-grunt-tasks": "^3.5.2",
     "superstatic": "^5.0.1"
+  },
+  "scripts": {
+    "postinstall": "bower install",
+    "update-deps": "npm update",
+    "postupdate-deps": "bower update",
+    "prestart": "npm install",
+    "less": "lessc ./app/styles/app.less ./app/styles/app.css",
+    "start": "npm run less && cd app && superstatic --config ../superstatic.json --port:8080 --host localhost",
+    "build:watch": "onchange \"./app/styles/*.less\" -v -i -w -- npm run less"
   }
 }
