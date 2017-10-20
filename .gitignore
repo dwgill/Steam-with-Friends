@@ -12,7 +12,7 @@ __pycache__/
 /client/bower_components
 npm-debug.log
 grunt-log.log
-
+app.css
 # Distribution / packaging
 .Python
 env/

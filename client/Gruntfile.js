@@ -1,9 +1,6 @@
 "use strict";
 
 module.exports = function(grunt) {
-        require('time-grunt')(grunt);
-        var rewrite = require('connect-modrewrite');
-
         require('load-grunt-tasks')(grunt);
         grunt.initConfig({
         jshint: {
@@ -18,28 +15,28 @@ module.exports = function(grunt) {
           files: ['<%= jshint.files %>'],
           tasks: ['jshint']
         },
-        connect: {
-            server: {
-                options:{
-                    port:9001,
-                    hostname: 'localhost',
-                    liverload: true,
-                    base: ['dist'],
-                    middleware: function(connect, options, middlewares){
-                        var rules =[
-
-                        ];
-                        middlewares.unshift(rewrite(rules));
-                        return middlewares;
-                    }
-                }
-            }
-        }
+        concat: {
+          options: {
+            separator: ';',
+          },
+          dist: {
+            src: ['src/intro.js', 'src/project.js', 'src/outro.js'],
+            dest: 'dist/built.js',
+          },
+        },
       });
     
       grunt.loadNpmTasks('grunt-contrib-jshint');
       grunt.loadNpmTasks('grunt-contrib-watch');
     
       grunt.registerTask('default', ['jshint']);
+      grunt.registerTask('build', function(){
+        grunt.task.run([
+          'clean',
+          'less',
+          'concat',
+          'copy'
+        ]);
+      });
     
     };
