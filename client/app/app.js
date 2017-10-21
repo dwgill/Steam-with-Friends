@@ -3,8 +3,7 @@
 angular.module('steam-with-friends', [
     'ngResource',
     'ngSanitize',
-    'ui.router',
-    'zingchart-angularjs'
+    'ui.router'
 ]);
 angular.module('steam-with-friends').run();
 
