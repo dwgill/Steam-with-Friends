@@ -1,9 +1,6 @@
 "use strict";
 
 module.exports = function(grunt) {
-        require('time-grunt')(grunt);
-        var rewrite = require('connect-modrewrite');
-
         require('load-grunt-tasks')(grunt);
         grunt.initConfig({
         jshint: {
@@ -14,32 +11,79 @@ module.exports = function(grunt) {
             }
           }
         },
+        less: {
+          default:{
+            files:[
+              {
+                expand:false,
+                src: 'app/styles/app.less',
+                dest:'dist/app.css'
+              }
+            ]
+          }
+        },
+        clean: {
+          dist: {
+            files: [
+              {
+                dot: true,
+                src: ['dist']
+              }
+            ]
+          }
+        },
         watch: {
           files: ['<%= jshint.files %>'],
           tasks: ['jshint']
         },
-        connect: {
-            server: {
-                options:{
-                    port:9001,
-                    hostname: 'localhost',
-                    liverload: true,
-                    base: ['dist'],
-                    middleware: function(connect, options, middlewares){
-                        var rules =[
+        concat: {
+          options: {
+            sourceMap:true
+          },
+          vendor: {
+            src: [
+              'app/bower_components/**/*.min.js',
 
-                        ];
-                        middlewares.unshift(rewrite(rules));
-                        return middlewares;
-                    }
-                }
-            }
+            ],
+            dest: 'dist/vendor.js',
+          },
+          source: {
+            src: [
+              'app/**/*.js',
+              'app/**/.js',
+            ],
+            dest: 'dist/source.js',
+          },
+        },
+        copy:{
+          dist:{
+            files: [{
+              expand:true,
+              dot:true,
+              cwd: './app',
+              dest: 'dist',
+              src: [
+                '**/*.{ico,png,txt,html,json,woff,ttf,woff2}',
+                '.htaccess',
+                '!bower_components/**/*',
+                'bower_components/**/*.{woff,ttf,woff2}',
+                '!**/*.css'
+              ]
+            }]
+          }
         }
+
       });
-    
-      grunt.loadNpmTasks('grunt-contrib-jshint');
-      grunt.loadNpmTasks('grunt-contrib-watch');
+  
     
       grunt.registerTask('default', ['jshint']);
+      grunt.registerTask('build', function(){
+        grunt.task.run([
+          'clean',
+          'less',
+          'concat',
+          'copy'
+        ]);
+      });
     
     };

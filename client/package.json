@@ -19,6 +19,13 @@
   "homepage": "https://github.com/dwgill/Steam-with-Friends#readme",
   "dependencies": {
     "bower": "^1.8.2",
+    "grunt": "^1.0.1",
+    "grunt-contrib-clean": "^1.1.0",
+    "grunt-contrib-concat": "^1.0.1",
+    "grunt-contrib-copy": "^1.0.0",
+    "grunt-contrib-jshint": "^1.1.0",
+    "grunt-contrib-less": "^1.4.1",
+    "grunt-contrib-watch": "^1.0.0",
     "http-serve": "^1.0.1",
     "less": "^3.0.0-alpha.3",
     "load-grunt-tasks": "^3.5.2",
@@ -30,7 +37,7 @@
     "postupdate-deps": "bower update",
     "prestart": "npm install",
     "less": "lessc ./app/styles/app.less ./app/styles/app.css",
-    "start": "npm run less && cd app && superstatic --config ../superstatic.json --port:8080 --host localhost",
+    "start": "grunt build && cd dist && superstatic --config ../superstatic.json --port:8080 --host localhost",
     "build:watch": "onchange \"./app/styles/*.less\" -v -i -w -- npm run less"
   }
 }
