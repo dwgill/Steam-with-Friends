@@ -3,7 +3,8 @@
 angular.module('steam-with-friends', [
     'ngResource',
     'ngSanitize',
-    'ui.router'
+    'ui.router',
+    'ui.bootstrap'
 ]);
 angular.module('steam-with-friends').run();
 
