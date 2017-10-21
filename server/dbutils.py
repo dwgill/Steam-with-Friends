@@ -66,6 +66,16 @@ def storeGameDatas(gamemetaDatas,sql_db_file):
     conn.commit()
     conn.close()
 
+def storeUserDatas(userDatas,sql_db_file):
+    if not os.path.isfile(sql_db_file):
+        createDB(sql_db_file)
+    conn = sqlite3.connect(sql_db_file)
+    cur = conn.cursor()
+    for user in userDatas:
+        storeGameData(game,cur)
+    conn.commit()
+    conn.close()
+
     
 def storeGameData(game_metaData,cur):
     
@@ -82,6 +92,19 @@ def storeGameData(game_metaData,cur):
             'developer': game_metaData["developer"],
             'publisher': game_metaData["publisher"],
             'price': game_metaData["price"]
+        })
+
+def storeUserData(user_metaData,cur):
+    
+    cur.execute("""
+    Insert into Users(steamid,avatar,username,profile_url,name)
+    Values(:steamid,:avatar,:username,:profile_url,:name)
+    """,{
+            'steamid': user_metaData["steamid"]
+            'avatar': user_metaData["avatar"]
+            'username': user_metaData["username"]
+            'profile_url' user_metaData["profile_url"]
+            'name' : user_metaData["name"]
         })
 
 def createDB(sql_db_file):
@@ -112,10 +135,11 @@ def createDB(sql_db_file):
 
     cur.execute("""CREATE TABLE `Users` (
 	`Id`	INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
-	`Name`	TEXT,
-	`SteamId`	INTEGER,
-	`AvatarUrl`	TEXT,
-	`ProfileUrl`	TEXT
+	`steamid`	INTEGER,
+	`avatar`	TEXT,
+	`username`	TEXT,
+	`profile_url`	TEXT,
+	`name'          TEXT
 )""")
     conn.close()
 
