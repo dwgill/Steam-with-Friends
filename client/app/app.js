@@ -2,22 +2,33 @@
 
 angular.module('steam-with-friends', [
     'ngResource',
-    'ngRoute',
     'ngSanitize',
     'ui.router'
 ]);
 angular.module('steam-with-friends').run();
 
-angular.module('steam-with-friends').config(function($urlRouterProvider, $stateProvider){
+angular.module('steam-with-friends').config(function($urlRouterProvider, $stateProvider, $locationProvider){
+    $locationProvider.html5Mode(true);
     var basePath = window.location.pathname.split('/')[1];
     var slash = basePath ? "/" : "";
     $stateProvider.state('home', {
-        abstract: true,
-        url: slash + basePath,
-        views: {
-            'body': {templateUrl: 'home.html'}
-        
+        url: slash + 'home',
+        views:{
+            body:{
+                templateUrl: 'home.html',
+                controller: 'HomeController'
+            }
         }
+        
+    });
+
+    $urlRouterProvider
+    .when('/home', function ($state) {
+        $state.go('home');
+    })
+    .otherwise(function ($injector) {
+        var $state = $injector.get('$state');
+        $state.go('home');
     });
 });
 
