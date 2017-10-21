@@ -23,7 +23,9 @@ angular.module('steam-with-friends')
 
         $scope.search = function() {
             $scope.users = $scope.users.filter(function(user){ return user.id  !== '';});
-            $state.go("results", {users: $scope.users});
+            $state.go("results", {users: $scope.users.map(function(user){
+                return user.id;
+            })});
         };
     });
 

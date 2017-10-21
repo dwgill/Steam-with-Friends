@@ -1,11 +1,9 @@
 <div class="comparisons">
-    <div ng-repeat="userInfo in data">
+    <div class="card-container" ng-repeat="userInfo in data">
         <div ng-include="'/views/userCard.html'"></div>
     </div>
 
-    <div ng-repeat="game in commonGames">
-        {{ game}}
-    </div>
+    <div ng-include="'/views/gamesList.html'"></div>
 
 
 </div>

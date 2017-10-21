@@ -3,16 +3,18 @@
 
 angular.module('steam-with-friends')
 
-    .controller('ResultsController', function ($scope, SteamApi, $state) {
+    .controller('ResultsController', function ($scope, SteamApi, $state, $location) {
+        if($state.params.users && $state.params.users.length ){
+            SteamApi.getData().get({users: $state.params.users.toString()}).$promise.then(function(response){
+                $scope.data = response.users;
+                
+                $scope.commonGames =  response.games;
+            });
+        } else{
+            $state.go('home');
+        }
         
-        var ids = $state.params.users.map(function(user){
-            return user.id;
-        }).toString();
 
-        SteamApi.getData().get({users: ids}).$promise.then(function(response){
-            $scope.data = response.users;
-            
-            $scope.commonGames =  response.games;
-        });
+        
         
     });

@@ -22,8 +22,7 @@ angular.module('steam-with-friends').config(function($urlRouterProvider, $stateP
         }
         
     }).state('results', {
-        url: slash + 'results',
-        params: {users: null},
+        url: slash + 'results?users',
         views:{
             body:{
                 templateUrl: 'results.html',
@@ -37,8 +36,10 @@ angular.module('steam-with-friends').config(function($urlRouterProvider, $stateP
     .when('/home', function ($state) {
         $state.go('home');
     })
-    .when('/results', function ($state) {
+    .when('/results', function ($state, $location) {
         $state.go('results');
+        
+        
     })
     .otherwise(function ($injector) {
         var $state = $injector.get('$state');
