@@ -8,8 +8,11 @@ def hello_world():
 
 @app.route('/get-games')
 def get_game():
-    profiles = list(map(util.get_user_id_from_url, request.args.get('userProfiles').split(',')))
-    return jsonify(profiles)
+    steam_ids = map(util.get_user_id_from_url, request.args.get('userProfiles').split(','))
+    data = map(util.get_all_user_data, steam_ids)
+
+    return jsonify(list(data))
 
 if __name__ == '__main__':
     app.run()
+
