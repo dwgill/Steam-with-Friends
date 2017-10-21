@@ -33,16 +33,9 @@ module.exports = function(grunt) {
           }
         },
         watch: {
-          options: {
-            interval: 1000
-          },
           js:{
             files: ['app/**/*.js', '!app/bower_components/**/*.js'],
             tasks: ['concat:source']
-          },
-          bower:{
-            files: ['app/bower_components/**'],
-            tasks: ['bower_concat']
           },
           less: {
             files: ['app/**/*.less'],
