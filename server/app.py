@@ -31,7 +31,7 @@ def get_games():
     return jsonify({
         'users': users,
         #  'games': list(map(util.get_game_info, games_owned_by_all)),
-        'games': list(map(util.get_game_info, games_owned_by_all)),
+        'games': list(games_owned_by_all),
     })
 
 def parse_param(param):
