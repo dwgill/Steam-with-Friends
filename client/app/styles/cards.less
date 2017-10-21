@@ -4,13 +4,12 @@
 }
 
 .card{
-	width: 200px;
-	height: 200px;
+	width: 400px;
+	height: 100px;
 	border: 1px solid black;
 	background-color: @peach;
 	margin:20px
 }
-
 
 .card.ng-leave.ng-leave-active,
 .card.ng-move,
@@ -22,4 +21,69 @@
 .card.ng-move.ng-move-active,
 .card.ng-enter.ng-enter-active {
   opacity:1;
+}
+
+.card {  
+  //@include dimensions( 500px,  100px);
+  padding: 20px;
+  border-radius: 3px;
+  background-color: white;
+  box-shadow: 0px 10px 20px rgba(0,0,0,0.2);
+  position: relative;
+  overflow: hidden;
+  &:after {
+    content: '';
+    display: block;
+    width: 190px;
+    height: 300px;
+    background: @peach;
+	z-index: -5;
+    
+    position: absolute;
+    animation: rotatemagic 0.75s cubic-bezier(0.425, 1.040, 0.470, 1.105) 1s both;
+  }
+}
+.badgescard{
+	padding: 10px 20px;
+	border-radius: 3px;
+	background-color: #ECECEC;
+	width: 480px; 
+	box-shadow: 0px 10px 20px rgba(0, 0, 0, 0.2);
+	position: absolute;
+	z-index: -1; 
+	left: 10px; 
+	bottom: 10px;
+	//@extend %flex; 
+	animation: animainfos 0.5s cubic-bezier(0.425, 1.040, 0.470, 1.105) 0.75s forwards;
+	span {
+		font-size: 1.6em;
+		margin: 0px 6px;
+		opacity: 0.6;
+	}
+}   
+
+.firstinfo {
+  //@extend %flex;
+  flex-direction: row;  
+  z-index:2;
+  position: relative;
+  img{ 
+    border-radius: 50%;
+    width: 120px;
+	height: 120px;
+  }
+  .profileinfo{
+    padding: 0px 20px;
+    h1{ font-size: 1.8em;}
+    h3{ font-size: 1.2em;
+        color: @peach;
+        font-style: italic;
+    }
+    p{
+      padding: 10px 0px;
+      color: #5A5A5A;
+      line-height: 1.2;
+      font-style: initial;
+    }  
+  }
 }
