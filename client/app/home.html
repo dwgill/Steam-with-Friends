@@ -19,6 +19,19 @@
           </div>
         </div>
         
+        <div class = "input-form">
+          <fieldset ng-repeat="user in users">
+                <input type="text" ng-change="userInput($index, user)" ng-model="user" name="" placeholder="Enter SteamID">
+                <button class="remove" ng-show="$last" ng-click="removeUser($index)">-</button>
+            </fieldset>
+            <button class="addfields" ng-click="addNewUser()">Add fields</button>
+                
+            <div id="usersDisplay">
+                {{ users }}
+            </div>
+          </div>
+          
+		
         <form>
         
         <div class="form-group">
@@ -46,3 +59,4 @@
       </form>
       </div>
     
+    <button ng-click="search()">submit</button>

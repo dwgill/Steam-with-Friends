@@ -3,7 +3,9 @@
 
 angular.module('steam-with-friends')
 
-    .controller('ResultsController', function ($scope, SteamApi) {
+    .controller('ResultsController', function ($scope, SteamApi, $state) {
+        $scope.fromRoute = $state.params;
+        
         function mapGames(userInfos){
             return userInfos.map(function(userInfo){
                 return userInfo.games;

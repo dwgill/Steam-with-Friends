@@ -22,6 +22,7 @@ angular.module('steam-with-friends').config(function($urlRouterProvider, $stateP
         
     }).state('results', {
         url: slash + 'results',
+        params: ["users"],
         views:{
             body:{
                 templateUrl: 'results.html',
