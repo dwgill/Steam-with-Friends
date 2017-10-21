@@ -1,6 +1,7 @@
 from flask import Flask, request, jsonify
 from flask_cors import CORS
 import util
+import dbutils
 
 app = Flask(__name__)
 cors = CORS(app, resources={r"/get-games*": {"origins": "*"}})
@@ -35,6 +36,9 @@ def get_games():
                           in games_owned_by_all
                           if util.is_game_multiplayer(steam_data, steamspy_data))
 
+    
+  
+    dbutils.storeGameDatas(multi_games_of_all,"SteamWithFriends.db")
 
     return jsonify({
         'users': users,
