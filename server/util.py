@@ -1,33 +1,39 @@
 import requests
 import re
+import functools
 
 STEAM_API_KEY = '576C821F7F6F425E341F9955224C9FEE'
 
 def parseUrl(url):
-    urlList = url.split('/')
-    idDetector = urlList[len(urlList) - 2]
-    idName = urlList[len(urlList) - 1]
-    return idDetector ,idName
+    '''
+    Given a url of the form
+        steamcommunity.com/id/<vanity_id> 
+    or
+        steamcommunity.com/profiles/<steam_id>
+    Returns the user identifier (either a steamid or a vanity_id)
+    and a bool indicated whether it is a steamid or not.
+    '''
 
+    if url.endswith('/'):
+        url = url[:-1]
+    urlList = url.split('/')
+    if len(urlList) < 2:
+        raise Exception('Invalid Steam profile url: ' + url)
+
+    id_or_profile = urlList[-2]
+    steamid_or_vanityid = urlList[-1]
+    return steamid_or_vanityid, id_or_profile != 'id'
+
+@functools.lru_cache(maxsize=128)
 def resolve_vanity_id(vanity_id):
-    return requests.get('http://api.steampowered.com/ISteamUser/ResolveVanityURL/v0001/',
+    request = requests.get('https://api.steampowered.com/ISteamUser/ResolveVanityURL/v0001/',
                  params={
                      'key': STEAM_API_KEY,
                      'vanityurl': vanity_id,
-                 }).json()['response']['steamid']
+                 })
+    return request.json()['response']['steamid']
 
-steam_profile_re = re.compile(r'(https?://)?steamcommunity.com/((profiles/(?P<steam_id>[0-9]+))|(id/(?P<vanity_id>[a-zA-Z0-9]+)))')
-def get_user_id_from_url(profile_url):
-    match = steam_profile_re.match(profile_url)
-    if match:
-        if match.group('steam_id'):
-            return match.group('steam_id')
-        else:
-            vanity_id = match.group('vanity_id')
-            return resolve_vanity_id(vanity_id)
-    else:
-        return None
-
+@functools.lru_cache(maxsize=128)
 def get_games_owned_by_user(user_steamid, include_free=False):
     include_free = 'true' if include_free else 'false'
     parameters = {
@@ -39,20 +45,44 @@ def get_games_owned_by_user(user_steamid, include_free=False):
     request = requests.get('https://api.steampowered.com/IPlayerService/GetOwnedGames/v1',
                         params=parameters)
 
-    return request.json()['response']
+    return [appid_playtime_entry['appid']
+            for appid_playtime_entry
+            in request.json()['response']['games']]
 
+
+@functools.lru_cache(maxsize=16384)
 def get_user_summary(user_steamid):
-    return requests.get('http://api.steampowered.com/ISteamUser/GetPlayerSummaries/v0002',
-                 params={
-                    'key': STEAM_API_KEY,
-                     'steamids': user_steamid,
-                 }).json()['response']['players'][0]
+    request = requests.get('https://api.steampowered.com/ISteamUser/GetPlayerSummaries/v0002',
+                           params={
+                               'key': STEAM_API_KEY,
+                               'steamids': user_steamid,
+                           })
 
-def get_all_user_data(user_steamid, include_free_games=False):
-    user_info = get_user_summary(user_steamid)
-    games_info = get_games_owned_by_user(user_steamid, include_free_games)
-    return {
-        'user': user_info,
-        'games': games_info['games'],
-        'games_count': games_info['game_count'],
-    }
+    return request.json()['response']['players'][0]
+
+@functools.lru_cache(maxsize=16384)
+def get_game_info(gameid):
+    steamspy_request = requests.get('https://steamspy.com/api.php',
+                           params={
+                               'request': 'appdetails',
+                               'appid': gameid,
+                           }).json()
+
+    steam_request = requests.get('http://store.steampowered.com/api/appdetails',
+                                 params={
+                                     'key': STEAM_API_KEY,
+                                     'appids': gameid,
+                                 }).json()
+
+
+    return request.json()
+
+def intersect_game_lists(game_lists):
+    first_list, *rest = game_lists
+    if not rest:
+        return first_list
+    else:
+        first_set = set(first_list)
+        rest_sets = (set(game_list) for game_list in rest)
+        return list(first_set.intersection(*rest_sets))
+

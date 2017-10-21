@@ -10,11 +10,42 @@ def hello_world():
     return 'Hello, World!'
 
 @app.route('/get-games')
-def get_game():
-    steam_ids = map(util.get_user_id_from_url, request.args.get('userProfiles').split(','))
-    data = map(util.get_all_user_data, steam_ids)
+def get_games():
+    if not request.args.get('users'):
+        return jsonify([]);
+    params = request.args.get('users').split(',')
 
-    return jsonify(list(data))
+    params = (parse_param(param) for param in params)
+
+    steamids = (identifier if is_steam_id else util.resolve_vanity_id(identifier)
+                for (identifier, is_steam_id)
+                in params)
+
+    users_and_games = ( (util.get_user_summary(steamid), util.get_games_owned_by_user(steamid))
+             for steamid in steamids)
+
+    users, game_lists = zip(*users_and_games)
+
+    games_owned_by_all = util.intersect_game_lists(game_lists)
+
+    return jsonify({
+        'users': users,
+        #  'games': list(map(util.get_game_info, games_owned_by_all)),
+        'games': list(map(util.get_game_info, games_owned_by_all)),
+    })
+
+def parse_param(param):
+    param = param.replace('http://', '').replace('https://', '')
+
+    if param.isdecimal():
+        return (param, True)
+    elif param.isalnum():
+        return (param, False)
+    elif param.startswith('steamcommunity.com/'):
+        return util.parseUrl(param)
+    else:
+        raise Exception('Invalid parameter: ' + param)
+
 
 if __name__ == '__main__':
     app.run()
