@@ -4,16 +4,16 @@
       </div>
         
       <div >
-        <div class="row">
-        <div class="col-sm-4 subheader">
+        <div class="row subheader">
+        <div class="col-sm-4 ">
             <h3>Enter Steam Profile URL's</h3>
             <p>Enter the Steam Profil URL of all users you want to compare!</p>
           </div>
-          <div class="col-sm-4 subheader">
+          <div class="col-sm-4 ">
             <h3>Filters</h3>
             <p>Filter your search to find the perfect game for you and your friends!</p>
           </div>    
-          <div class="col-sm-4 subheader">
+          <div class="col-sm-4 ">
             <h3>Results</h3>        
             <p>Find games you have in common or almost in common!</p>
           </div>
@@ -21,16 +21,11 @@
         
         <div class = "input-form form-group">
           <fieldset ng-repeat="user in users">
-                <input type="text" class="form-control" ng-model="user.id" name="" placeholder="Enter SteamID">
-                <button ng-hide="$first" class="remove" ng-show="$last && !$first" ng-click="removeUser($index)">-</button>
+                <input ng-keypress="handleKeypress($event )" type="text" class="form-control" ng-model="user.id" name="" placeholder="Enter SteamID">
+                <button tabindex="-1" ng-hide="$first" class="remove" ng-show="$last && !$first" ng-click="removeUser($index)">-</button>
                 
-          </fieldset>
-          <div>
-              <button class="addfields" ng-click="addNewUser()">Add fields</button>  
-          </div>  
-
-          
-          <button class="btn btn-primary" ng-click="search()">Submit</button>
+          </fieldset>          
+          <button class="btn btn-primary giant" ng-click="search()">Submit</button>
         <form>
         
 

@@ -19,7 +19,15 @@ angular.module('steam-with-friends')
             }
            
         };
+        
+        $scope.handleKeypress = function(event){
+            if(event.keyCode === 13){
+                $scope.search();
+            }else if(event){
+               $scope.addNewUser();
+            }
 
+        };
 
         $scope.search = function() {
             $scope.users = $scope.users.filter(function(user){ return user.id  !== '';});
