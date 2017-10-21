@@ -21,17 +21,20 @@
         
         <div class = "input-form">
           <fieldset ng-repeat="user in users">
-                <input type="text" ng-change="userInput($index, user)" ng-model="user" name="" placeholder="Enter SteamID">
-                <button class="remove" ng-show="$last" ng-click="removeUser($index)">-</button>
-            </fieldset>
-            <button class="addfields" ng-click="addNewUser()">Add fields</button>
+                <input type="text"  ng-model="user.id" name="" placeholder="Enter SteamID">
+                <button ng-hide="$first" class="remove" ng-show="$last && !$first" ng-click="removeUser($index)">-</button>
+                
+          </fieldset>
+          <div>
+              <button class="addfields" ng-click="addNewUser()">Add fields</button>  
+          </div>  
                 
             <div id="usersDisplay">
                 {{ users }}
             </div>
           </div>
           
-		
+          <button class="btn btn-primary" ng-click="search()">Submit</button>
         <form>
         
         <div class="form-group">
@@ -55,8 +58,8 @@
             Check me out
           </label>
         </div>
-        <button type="submit" class="btn btn-primary">Submit</button>
+       
       </form>
       </div>
     
-    <button ng-click="search()">submit</button>
+    

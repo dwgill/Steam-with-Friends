@@ -5,24 +5,25 @@ angular.module('steam-with-friends')
 
     .controller('HomeController', function ($scope, $state) {        
 
-        $scope.users = [""];
+        $scope.users = [{id: ''}];
         
         $scope.addNewUser = function() {
-            if($scope.users[$scope.users.length - 1] !== ""){
-                $scope.users.push('');
+            if($scope.users[$scope.users.length - 1].id !== ""){
+                $scope.users.push({id:''});
             }            
         };
             
         $scope.removeUser = function(index) {
-           $scope.users = $scope.users.splice(index, 1);
+            if(index > 0){
+                $scope.users = $scope.users.splice(index, 1);
+            }
+           
         };
 
-        $scope.userInput = function(index, value) {
-            $scope.users[index] = value;
-        }
 
         $scope.search = function() {
-            $state.go("results", {"users":"$scope.users"});
+            $scope.users = $scope.users.filter(function(user){ return user.id  !== '';});
+            $state.go("results", {users: $scope.users});
         };
     });
 
