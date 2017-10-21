@@ -1,12 +1,14 @@
-@import 'animations.less';
 
+@import 'animations.less';
 @vivid-cerulean: #00AAFF;
 @light-red-ochre: #F97352;
 @deep-space-sparkle: #335C67;
 @peach: #FFF3B0;
 @tigers-eye: #E09F3E;
 
-
+.subheader{
+	background-color: @tigers-eye;
+}
 .input-form{
 	fieldset{
     background: #FCFCFC;
@@ -53,31 +55,6 @@ p {
 	line-height: 25px;
 }
 
-.card-container{
-	display: flex;
-	width: 100%;
-}
-
-.card{
-	width: 200px;
-	height: 200px;
-	border: 1px solid black;
-	background-color: @peach;
-	margin:20px
-}
-
-
-.card.ng-leave.ng-leave-active,
-.card.ng-move,
-.card.ng-enter {
-  opacity:0;
-}
-
-.card.ng-leave,
-.card.ng-move.ng-move-active,
-.card.ng-enter.ng-enter-active {
-  opacity:1;
-}
 
 body.default { 
     background-color: @deep-space-sparkle;
@@ -102,14 +79,7 @@ body.default {
 	color: @peach !important;
 }
 
-.game-list-container{
-	width: 50%;
-	display: flex;
-	flex-wrap: wrap;
-	height: 100%;
-	padding: 20px;
-	.game-tile{
-		width: 25%;
-		height: 100px;
-	}
-}
+
+
+@import 'cards.less';
+@import 'games.less';

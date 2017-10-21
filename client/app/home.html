@@ -5,23 +5,23 @@
         
       <div >
         <div class="row">
-        <div class="col-sm-4">
+        <div class="col-sm-4 subheader">
             <h3>Enter Steam Profile URL's</h3>
             <p>Enter the Steam Profil URL of all users you want to compare!</p>
           </div>
-          <div class="col-sm-4">
+          <div class="col-sm-4 subheader">
             <h3>Filters</h3>
             <p>Filter your search to find the perfect game for you and your friends!</p>
           </div>    
-          <div class="col-sm-4">
+          <div class="col-sm-4 subheader">
             <h3>Results</h3>        
             <p>Find games you have in common or almost in common!</p>
           </div>
         </div>
         
-        <div class = "input-form">
+        <div class = "input-form form-group">
           <fieldset ng-repeat="user in users">
-                <input type="text"  ng-model="user.id" name="" placeholder="Enter SteamID">
+                <input type="text" class="form-control" ng-model="user.id" name="" placeholder="Enter SteamID">
                 <button ng-hide="$first" class="remove" ng-show="$last && !$first" ng-click="removeUser($index)">-</button>
                 
           </fieldset>
@@ -33,29 +33,9 @@
           <button class="btn btn-primary" ng-click="search()">Submit</button>
         <form>
         
-        <div class="form-group">
-          <label for="exampleInputEmail1">Steam Profile URL</label>
-          <input type="email" class="form-control" id="exampleInputEmail1" aria-describedby="emailHelp" placeholder="http://steamcommunity.com/profiles/#">
-        </div>
-        <div class="form-group">
-          <input type="email" class="form-control" id="exampleInputEmail1" aria-describedby="emailHelp" placeholder="http://steamcommunity.com/profiles/#">
-        </div>
-        <div class="form-group">
-          <input type="email" class="form-control" id="exampleInputEmail1" aria-describedby="emailHelp" placeholder="http://steamcommunity.com/profiles/#">
-        </div>
-        <div class="form-group">
-          <input type="email" class="form-control" id="exampleInputEmail1" aria-describedby="emailHelp" placeholder="http://steamcommunity.com/profiles/#">
-          <small id="emailHelp" class="form-text text-muted">We'll never share your email with anyone else.</small>
-        </div>
-        
-        <div class="form-check">
-          <label class="form-check-label">
-            <input type="checkbox" class="form-check-input">
-            Check me out
-          </label>
-        </div>
+
        
       </form>
       </div>
     
-    
+</div> 
