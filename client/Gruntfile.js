@@ -42,18 +42,31 @@ module.exports = function(grunt) {
           },
           vendor: {
             src: [
-              'app/bower_components/**/*.min.js',
-
+              './app/bower_components/angular/angular.min.js',
+              './app/bower_components/angular-bootstrap/ui-bootstrap.min.js',
+              './app/bower_components/angular-resource/angular-resource.min.js',
+              './app/bower_components/angular-route/angular-route.min.js',
+              './app/bower_components/angular-sanitize/angular-sanitize.min.js',
+              './app/bower_components/lodash/dist/lodash.min.js',
             ],
             dest: 'dist/vendor.js',
           },
           source: {
             src: [
-              'app/**/*.js',
-              'app/**/.js',
+              './app/**/*.js',
+              './app/**/.js',
             ],
             dest: 'dist/source.js',
           },
+        },
+        bower_concat: {
+          all: {
+            dest: 'dist/vendor.js',
+            cssDest: 'dist/vendor.css',
+            bowerOptions: {
+              relative: false
+            }
+          }
         },
         copy:{
           dist:{
@@ -81,7 +94,8 @@ module.exports = function(grunt) {
         grunt.task.run([
           'clean',
           'less',
-          'concat',
+          'bower_concat',
+          'concat:source',
           'copy'
         ]);
       });
