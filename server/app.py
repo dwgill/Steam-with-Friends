@@ -28,10 +28,18 @@ def get_games():
 
     games_owned_by_all = util.intersect_game_lists(game_lists)
 
+    games_owned_by_all = ( util.get_game_datas(appid) for appid in games_owned_by_all )
+
+    multi_games_of_all = (util.consolidate_game_data(steam_data, steamspy_data)
+                          for (steam_data, steamspy_data)
+                          in games_owned_by_all
+                          if util.is_game_multiplayer(steam_data, steamspy_data))
+
+
     return jsonify({
         'users': users,
         #  'games': list(map(util.get_game_info, games_owned_by_all)),
-        'games': list(games_owned_by_all),
+        'games': list(multi_games_of_all),
     })
 
 def parse_param(param):
