@@ -57,8 +57,15 @@ def get_user_summary(user_steamid):
                                'key': STEAM_API_KEY,
                                'steamids': user_steamid,
                            })
+    user_data = request.json()['response']['players'][0]
 
-    return request.json()['response']['players'][0]
+    return {
+        'steamid': user_data.get('steamid'),
+        'avatar': user_data.get('avatarfull'),
+        'username': user_data.get('personaname'),
+        'profile_url': user_data.get('profileurl'),
+        'name': user_data.get('realname'),
+    }
 
 @functools.lru_cache(maxsize=16384)
 def get_game_datas(appid):
@@ -126,6 +133,8 @@ def consolidate_game_data(steam_data, steamspy_data):
 
     store_page = derive_store_page_from_appid(steamspy_data.get('appid'))
 
+    price = steam_data.get('price_overview', {}).get('initial') or steam_data.get('price_overview', {}).get('final')
+
     return { # Example data for Dungeon Defenders
         'name': steam_data.get('name'),                         # 'Dungeon Defenders'
         'appid': steam_data.get('steam_appid',                  # 65800
@@ -138,7 +147,7 @@ def consolidate_game_data(steam_data, steamspy_data):
         'developer': steamspy_data.get('developer'),            # 'Trendy Entertainment'
         'publisher': steamspy_data.get('publisher'),            # 'Trendy Entertainment'
         'store_page': store_page,                               # https://etc...
-        'price': steam_data.get('price_overview', {}).get('final'), # 1599
+        'price': price,                                         # 1599
     }
 
 def intersect_game_lists(game_lists):
