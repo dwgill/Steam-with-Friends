@@ -14,8 +14,8 @@ angular.module('steam-with-friends')
         };
             
         $scope.removeUser = function(index) {
-            if(index > 0){
-                $scope.users = $scope.users.splice(index, 1);
+            if($scope.users.length > 0){
+                $scope.users = $scope.users.splice($scope.users.length - 2, 1);
             }
            
         };
