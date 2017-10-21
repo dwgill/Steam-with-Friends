@@ -74,7 +74,7 @@ def get_game_datas(appid):
                                      'key': STEAM_API_KEY,
                                      'appids': appid,
                                  })
-    steam_data = steam_request.json()[str(appid)].get('data', {})
+    steam_data = steam_request.json().get(str(appid), {}).get('data', {})
 
     return (steam_data, steamspy_data)
 
