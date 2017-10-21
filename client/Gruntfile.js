@@ -40,6 +40,10 @@ module.exports = function(grunt) {
             files: ['app/**/*.js', '!app/bower_components/**/*.js'],
             tasks: ['concat:source']
           },
+          bower:{
+            files: ['app/bower_components/**'],
+            tasks: ['bower_concat']
+          },
           less: {
             files: ['app/**/*.less'],
             tasks: ['less']

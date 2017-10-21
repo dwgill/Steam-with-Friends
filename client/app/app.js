@@ -3,7 +3,8 @@
 angular.module('steam-with-friends', [
     'ngResource',
     'ngSanitize',
-    'ui.router'
+    'ui.router',
+    'zingchart-angularjs'
 ]);
 angular.module('steam-with-friends').run();
 
@@ -20,11 +21,23 @@ angular.module('steam-with-friends').config(function($urlRouterProvider, $stateP
             }
         }
         
+    }).state('results', {
+        url: slash + 'results',
+        views:{
+            body:{
+                templateUrl: 'results.html',
+                controller: 'ResultsController'
+            }
+        }
+        
     });
 
     $urlRouterProvider
     .when('/home', function ($state) {
         $state.go('home');
+    })
+    .when('/results', function ($state) {
+        $state.go('results');
     })
     .otherwise(function ($injector) {
         var $state = $injector.get('$state');
