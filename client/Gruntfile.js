@@ -42,15 +42,15 @@ module.exports = function(grunt) {
           },
           vendor: {
             src: [
-              'app/bower_components/*/*.min.js',
+              'app/bower_components/**/*.min.js',
 
             ],
             dest: 'dist/vendor.js',
           },
           source: {
             src: [
-              'app/app.js',
-
+              'app/**/*.js',
+              'app/**/.js',
             ],
             dest: 'dist/source.js',
           },

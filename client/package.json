@@ -37,7 +37,7 @@
     "postupdate-deps": "bower update",
     "prestart": "npm install",
     "less": "lessc ./app/styles/app.less ./app/styles/app.css",
-    "start": "npm run less && cd app && superstatic --config ../superstatic.json --port:8080 --host localhost",
+    "start": "grunt build && cd dist && superstatic --config ../superstatic.json --port:8080 --host localhost",
     "build:watch": "onchange \"./app/styles/*.less\" -v -i -w -- npm run less"
   }
 }
