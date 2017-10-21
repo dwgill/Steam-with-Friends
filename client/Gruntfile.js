@@ -33,8 +33,21 @@ module.exports = function(grunt) {
           }
         },
         watch: {
-          files: ['<%= jshint.files %>'],
-          tasks: ['jshint']
+          options: {
+            interval: 1000
+          },
+          js:{
+            files: ['app/**/*.js', '!app/bower_components/**/*.js'],
+            tasks: ['concat:source']
+          },
+          less: {
+            files: ['app/**/*.less'],
+            tasks: ['less']
+          },
+          html:{
+            files: ['app/**/*.html', '!app/bower_components/**/*'],
+            tasks: ['copy:dist']
+          }
         },
         concat: {
           options: {
@@ -85,14 +98,12 @@ module.exports = function(grunt) {
             }]
           }
         }
-
       });
   
     
       grunt.registerTask('default', ['jshint']);
       grunt.registerTask('build', function(){
         grunt.task.run([
-          'clean',
           'less',
           'bower_concat',
           'concat:source',
