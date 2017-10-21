@@ -4,17 +4,15 @@
 angular.module('steam-with-friends')
 
     .controller('ResultsController', function ($scope, SteamApi, $state) {
-        $scope.fromRoute = $state.params;
         
-        function mapGames(userInfos){
-            return userInfos.map(function(userInfo){
-                return userInfo.games;
-            });
-        }
-        SteamApi.getData().get({userProfiles: "https://steamcommunity.com/id/razorhg/,http://steamcommunity.com/profiles/76561198045711046/"}).$promise.then(function(response){
-            $scope.data = response;
-            var games = mapGames(response);
-            $scope.commonGames =  _.intersectionBy(games[0], games[0], games[1], 'appid');
+        var ids = $state.params.users.map(function(user){
+            return user.id;
+        }).toString();
+
+        SteamApi.getData().get({users: ids}).$promise.then(function(response){
+            $scope.data = response.users;
+            
+            $scope.commonGames =  response.games;
         });
         
     });

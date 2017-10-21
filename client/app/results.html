@@ -1,16 +1,11 @@
 <div class="comparisons">
     <div ng-repeat="userInfo in data">
-        <img ng-src="{{userInfo.user.avatar}}"/>
-        <a target="_blank" ng-href="{{userInfo.user.profileurl}}">{{ userInfo.user.profileurl }}</a>
-        <div>{{ userInfo.user.personaname }}</div>
+        <div ng-include="'/views/userCard.html'"></div>
     </div>
 
     <div ng-repeat="game in commonGames">
-        {{ game.appid}}
+        {{ game}}
     </div>
 
-    <div>
-        {{fromRoute}}
-    </div>
 
 </div>
