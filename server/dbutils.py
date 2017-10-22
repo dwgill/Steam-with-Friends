@@ -1,13 +1,30 @@
+import util
 import sqlite3
 import os
 
+
+def map_md_row_to_dict(game_md_row):
+    return {
+        'name': game_md_row[1],
+        'appid': game_md_row[2],
+        'image': game_md_row[3],
+        'platforms': game_md_row[4].split(':'),
+        'genres': game_md_row[5].split(':'),
+        'tags': game_md_row[6].split(':'),
+        'global_owners': game_md_row[7],
+        'developer': game_md_row[8],
+        'publisher': game_md_row[9],
+        'store_page': util.derive_store_page_from_appid(game_md_row[2]),
+        'price': game_md_row[10],
+        'multiplayer': bool(game_md_row[11]),
+    }
+
 def get_cached_md_for_games(steamGame_ids,sql_db_file):
+    games_not_found_in_db = { str(appid): True for appid in steamGame_ids }
     
     missing = []
     metadata = {}
     
-
-
     if not os.path.isfile(sql_db_file):
         createDB(sql_db_file)
         missing = steamGame_ids
@@ -15,16 +32,28 @@ def get_cached_md_for_games(steamGame_ids,sql_db_file):
     
     conn = sqlite3.connect(sql_db_file)
     cur = conn.cursor()
-    
-    for id in steamGame_ids:
-        row = cur.execute("Select * from Game where appid=" + str(id))
-        record = row.fetchone()
-        if record == None:
-            missing.append(id)
-        else:
-            dict = {}
-            metadata.append(dict)
-    return metadata,missing
+
+    select_q = "SELECT * FROM Game WHERE appid IN ({arg_seq})"
+
+    arg_seq = ', '.join(['?'] * len(steamGame_ids)) # '?, ?, ?, ...'
+
+    select_q = select_q.format(arg_seq=arg_seq)
+    # "SELECT * FROM Game WHERE appid in (?, ?, ?, ...)"
+
+    rows = cur.execute(select_q, tuple(map(str, steamGame_ids)))
+
+    game_datas = []
+
+    for row in rows.fetchall():
+        game_data = map_md_row_to_dict(row)
+        game_datas.append(game_data)
+        if str(game_data['appid']) in games_not_found_in_db:
+            del games_not_found_in_db[str(game_data['appid'])]
+
+    conn.close()
+
+    #  foo = 1/0
+    return game_datas, list(games_not_found_in_db.keys())
 
 def get_cached_md_for_users(steamIds,sql_db_file):
     missing = []
@@ -56,12 +85,14 @@ def get_cached_md_for_users(steamIds,sql_db_file):
             metadata[id] = record
     return metadata,missing
 
-def storeGameDatas(gamemetaDatas,sql_db_file):
+def storeGameDatas(game_metaDatas, sql_db_file):
     if not os.path.isfile(sql_db_file):
         createDB(sql_db_file)
     conn = sqlite3.connect(sql_db_file)
     cur = conn.cursor()
-    for game in gamemetaDatas:
+    for game in game_metaDatas:
+        #  if not game.get('price'):
+            #  continue
         storeGameData(game,cur)
     conn.commit()
     conn.close()
@@ -80,18 +111,20 @@ def storeUserDatas(userDatas,sql_db_file):
 def storeGameData(game_metaData,cur):
     
     cur.execute("""
-    Insert into Game(name,appid,image,platforms,tags,global_owners,developer,publisher,price)
-    Values(:name,:appid, :image, :platforms,:tags, :global_owners,:developer, :publisher, :price)
-    """,{
+    Insert into Game(name,appid,image,platforms,genres,tags,global_owners,developer,publisher,price,multiplayer)
+    Values(:name,:appid, :image, :platforms, :genres, :tags, :global_owners, :developer, :publisher, :price, :multiplayer)
+    """, {
             'name': game_metaData["name"],
             'appid': game_metaData["appid"],
             'image': game_metaData["image"],
             'platforms': ':'.join(game_metaData["platforms"]),
+            'genres': ':'.join(game_metaData['genres']),
             'tags': ':'.join(game_metaData["tags"]),
             'global_owners': game_metaData["global_owners"],
             'developer': game_metaData["developer"],
             'publisher': game_metaData["publisher"],
-            'price': game_metaData["price"]
+            'price': game_metaData["price"],
+            'multiplayer': str(int(game_metaData["multiplayer"])),
         })
 
 def storeUserData(user_metaData,cur):
@@ -100,11 +133,11 @@ def storeUserData(user_metaData,cur):
     Insert into Users(steamid,avatar,username,profile_url,name)
     Values(:steamid,:avatar,:username,:profile_url,:name)
     """,{
-            'steamid': user_metaData["steamid"]
-            'avatar': user_metaData["avatar"]
-            'username': user_metaData["username"]
-            'profile_url' user_metaData["profile_url"]
-            'name' : user_metaData["name"]
+            'steamid': user_metaData["steamid"],
+            'avatar': user_metaData["avatar"],
+            'username': user_metaData["username"],
+            'profile_url': user_metaData["profile_url"],
+            'name' : user_metaData["name"],
         })
 
 def createDB(sql_db_file):
@@ -117,11 +150,13 @@ def createDB(sql_db_file):
 	appid	INTEGER,
 	image	TEXT,
 	platforms  TEXT,
+        genres TEXT,
 	tags	TEXT,
 	global_owners	INTEGER,
 	developer TEXT,
 	publisher TEXT,
-	price TEXT
+	price TEXT,
+        multiplayer INTEGER
 )""")
 
     cur.execute("""CREATE TABLE `GameToUsers` (
@@ -139,7 +174,7 @@ def createDB(sql_db_file):
 	`avatar`	TEXT,
 	`username`	TEXT,
 	`profile_url`	TEXT,
-	`name'          TEXT
+	`name`          TEXT
 )""")
     conn.close()
 
