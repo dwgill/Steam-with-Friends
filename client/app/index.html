@@ -17,18 +17,20 @@
   <base href="/">
   <link href="http://fonts.googleapis.com/css?family=Corben:bold" rel="stylesheet" type="text/css">
   <link href="http://fonts.googleapis.com/css?family=Nobile" rel="stylesheet" type="text/css">
-  <link src="./vendor.js" rel="stylesheet" type="text/css">
+  <link href="./vendor.css" rel="stylesheet" >
 	<link href="https://fonts.googleapis.com/css?family=Lobster" rel="stylesheet">
-	<link href="https://fonts.googleapis.com/css?family=Cabin" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css?family=Cabin" rel="stylesheet">
+  
   <!--[if lt IE 9]>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html5shiv/3.7.3/html5shiv.js"></script>
   <![endif]-->
 </head>
 
-<body class="default" ng-app="steam-with-friends">
+<body ng-cloak=""  class="default" ng-app="steam-with-friends">
 
     <div class="body" ui-view="body"></div>
  <script type="text/javascript" src="./vendor.js"></script>   
+ <script src="http://ngmaterial.assets.s3.amazonaws.com/svg-assets-cache.js"></script>
   <script type="text/javascript" src="./source.js"></script>
     
 </body>
