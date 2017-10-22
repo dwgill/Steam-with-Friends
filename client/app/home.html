@@ -22,10 +22,10 @@
         <div class = "input-form form-group">
           <fieldset ng-repeat="user in users">
                 <input ng-keypress="handleKeypress($event )" type="text" class="form-control" ng-model="user.id" name="" placeholder="Enter SteamID">
-                <button tabindex="-1" class="remove" ng-show="$last && !$first" ng-click="removeUser($index)">-</button>
+                <button tabindex="-1" class="remove" ng-show="$last && !$first" ng-click="removeUser($index)"><i class="fa fa-minus" aria-hidden="true"></i></button>
                 
           </fieldset>          
-          <button class="btn btn-primary giant" ng-click="search()">Submit</button>
+          <button class="btn btn-primary giant" ng-click="search()"><i class="fa fa-search search-button" aria-hidden="true"></i></button>
         <form>
         
 
