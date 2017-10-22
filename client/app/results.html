@@ -13,8 +13,9 @@
         </div>
     </div>
 
-    <div ng-include="'/views/filterControl.html'"></div>
+    <div ng-show="gamesLoaded" ng-include="'/views/filterControl.html'"></div>
     <div ng-include="'/views/gamesList.html'"></div>
 
     <a class="back-link bottom" ng-click="goToTop()"><i class="fa fa-chevron-circle-up" aria-hidden="true"></i></a>
+    
 </div>
