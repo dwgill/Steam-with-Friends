@@ -1,4 +1,4 @@
-<a class="back-link" ng-click="goBack()"><i class="fa fa-chevron-circle-left" aria-hidden="true"></i></a>
+<a id="top-link" class="back-link" ng-click="goBack()"><i class="fa fa-chevron-circle-left" aria-hidden="true"></i></a>
 <h2 class="back-header">Back to Search</h2>
 <h1 class="results-header">Results</h1>
 <div class="comparisons">
@@ -16,5 +16,5 @@
     <div ng-include="'/views/filterControl.html'"></div>
     <div ng-include="'/views/gamesList.html'"></div>
 
-
+    <a class="back-link bottom" ng-click="goToTop()"><i class="fa fa-chevron-circle-up" aria-hidden="true"></i></a>
 </div>

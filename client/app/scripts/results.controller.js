@@ -3,7 +3,7 @@
 
 angular.module('steam-with-friends')
 
-    .controller('ResultsController', function ($scope, SteamApi, $state, $location) {
+    .controller('ResultsController', function ($scope, SteamApi, $state, $location, $anchorScroll) {
         $scope.tags = [];
         $scope.genres = [];
         $scope.selectedTags = [];
@@ -37,4 +37,11 @@ angular.module('steam-with-friends')
             return items.join(" ");
         };
         
+        $scope.goToTop = function() {
+
+            $location.hash('top-link');
+
+            $anchorScroll();
+          };
+
     });
