@@ -30,6 +30,9 @@ angular.module('steam-with-friends')
 
         $scope.moreDetails = function(game){
             game.spanCol = 2;
+            if(!angular.isDefined(game.spanRow)){
+                game.spanRow = 1;
+            }
             game.spanRow = game.spanRow === 1 ? 2 : 1;
         };
 
