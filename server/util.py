@@ -36,7 +36,7 @@ def resolve_vanity_id(vanity_id):
                      'key': STEAM_API_KEY,
                      'vanityurl': vanity_id,
                  })
-    if not request or request.json().get('response', {}).get('message').lower() == 'no match':
+    if not request or request.json().get('response', {}).get('message', {}).lower() == 'no match':
         raise CannotDetermineSteamId(vanity_id)
     return request.json()['response']['steamid']
 
