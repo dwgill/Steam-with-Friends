@@ -71,8 +71,10 @@ module.exports = function(grunt) {
         },
         bower_concat: {
           all: {
-            dest: 'dist/vendor.js',
-            cssDest: 'dist/vendor.css',
+            dest: {
+              js: 'dist/vendor.js',
+              css: 'dist/vendor.css'
+            },
             bowerOptions: {
               relative: false
             }
