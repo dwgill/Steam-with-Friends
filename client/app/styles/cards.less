@@ -36,29 +36,39 @@
     display: block;
     width: 190px;
     height: 300px;
-    background: @peach;
-	z-index: -5;
+    background: @light-red-ochre;
+		z-index: -5;
     
     position: absolute;
     animation: rotatemagic 0.75s cubic-bezier(0.425, 1.040, 0.470, 1.105) 1s both;
   }
 }
-.badgescard{
+.badgescard {
+	.card;
+	.outside-animate;
+	height: 75px;
+	top:35px;
 	padding: 10px 20px;
 	border-radius: 3px;
-	background-color: #ECECEC;
-	width: 480px; 
-	box-shadow: 0px 10px 20px rgba(0, 0, 0, 0.2);
+	background-color: #ECECEC;	
+	box-shadow: 0px 10px 20px rgba(0, 0, 0, 0.2);	
 	position: absolute;
+  width: 250px;
+  left: 20px;
 	z-index: -1; 
-	left: 10px; 
-	bottom: 10px;
+	bottom: 0px;
 	//@extend %flex; 
-	animation: animainfos 0.5s cubic-bezier(0.425, 1.040, 0.470, 1.105) 0.75s forwards;
 	span {
 		font-size: 1.6em;
 		margin: 0px 6px;
 		opacity: 0.6;
+	}
+	&:after {
+    background: #ECECEC;
+	}
+	img{
+		    height: 25px;
+    margin-top: 35px;
 	}
 }   
 
@@ -69,12 +79,17 @@
   position: relative;
   img{ 
     border-radius: 50%;
-    width: 120px;
-	height: 120px;
+    width: 75px;
+		height: 75px;
+		    margin-top: 12px;
+    margin-left: 20px;
   }
-  .profileinfo{
+
     padding: 0px 20px;
-    h1{ font-size: 1.8em;}
+    h1{ 
+			float: right;
+			font: impact;
+		}
     h3{ font-size: 1.2em;
         color: @peach;
         font-style: italic;
@@ -85,5 +100,19 @@
       line-height: 1.2;
       font-style: initial;
     }  
-  }
+  
 }
+.sub-card-container{
+	position: relative;
+}
+
+.outside-animate {
+	animation: animainfos 0.5s cubic-bezier(0.425, 1.040, 0.470, 1.105) 0.75s forwards;
+}
+ 
+ .profileinfo{
+	 top:20px;
+	     margin-top: 26px;
+ }
+ 
+ 
