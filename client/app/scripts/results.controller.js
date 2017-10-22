@@ -7,7 +7,7 @@ angular.module('steam-with-friends')
         if($state.params.users && $state.params.users.length ){
             SteamApi.getData().get({users: $state.params.users.toString()}).$promise.then(function(response){
                 $scope.data = response.users;
-                
+                $scope.gamesLoaded = true;
                 $scope.commonGames =  response.games;
             });
         } else{
