@@ -6,6 +6,12 @@ import dbutils
 app = Flask(__name__)
 cors = CORS(app, resources={r"/get-games*": {"origins": "*"}})
 
+def error(msg, status=400):
+    return jsonify({
+        'status': 'error',
+        'error': msg,
+    }), status
+
 @app.route('/')
 def hello_world():
     return 'Hello, World!'
@@ -13,14 +19,20 @@ def hello_world():
 @app.route('/get-games')
 def get_games():
     if not request.args.get('users'):
-        return jsonify([]);
+        return error('no arguments')
     params = request.args.get('users').split(',')
 
-    params = (parse_param(param) for param in params)
+    if not params:
+        return error('no arguments')
 
-    steamids = [identifier if is_steam_id else util.resolve_vanity_id(identifier)
-                for (identifier, is_steam_id)
-                in params]
+    try: 
+        params = (parse_param(param) for param in params)
+
+        steamids = [identifier if is_steam_id else util.resolve_vanity_id(identifier)
+                    for (identifier, is_steam_id)
+                    in params]
+    except util.CannotDetermineSteamId as err:
+        return error('cannot determine steamid: ' + str(err))
 
     user_summaries = util.get_user_summaries(steamids)
 
@@ -40,6 +52,7 @@ def get_games():
     })
 
 def parse_param(param):
+    param = str(param)
     param = param.replace('http://', '').replace('https://', '')
 
     if param.isdecimal():
@@ -49,8 +62,7 @@ def parse_param(param):
     elif param.startswith('steamcommunity.com/'):
         return util.parseUrl(param)
     else:
-        raise Exception('Invalid parameter: ' + param)
-
+        raise util.CannotDetermineSteamId(Param)
 
 if __name__ == '__main__':
     app.run()

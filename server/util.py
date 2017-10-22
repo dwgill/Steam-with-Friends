@@ -23,7 +23,7 @@ def parseUrl(url):
         url = url[:-1]
     urlList = url.split('/')
     if len(urlList) < 2:
-        raise Exception('Invalid Steam profile url: ' + url)
+        raise CannotDetermineSteamId(url)
 
     id_or_profile = urlList[-2]
     steamid_or_vanityid = urlList[-1]
@@ -36,6 +36,8 @@ def resolve_vanity_id(vanity_id):
                      'key': STEAM_API_KEY,
                      'vanityurl': vanity_id,
                  })
+    if not request or request.json().get('response', {}).get('message').lower() == 'no match':
+        raise CannotDetermineSteamId(vanity_id)
     return request.json()['response']['steamid']
 
 @functools.lru_cache(maxsize=128)
@@ -211,4 +213,8 @@ def intersect_game_lists(game_lists):
         first_set = set(first_list)
         rest_sets = map(set, rest)
         return first_set.intersection(*rest_sets)
+
+class CannotDetermineSteamId(Exception):
+    pass
+
 
