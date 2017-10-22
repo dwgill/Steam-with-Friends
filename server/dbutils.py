@@ -103,7 +103,7 @@ def storeUserDatas(userDatas,sql_db_file):
     conn = sqlite3.connect(sql_db_file)
     cur = conn.cursor()
     for user in userDatas:
-        storeGameData(game,cur)
+        storeUserData(user,cur)
     conn.commit()
     conn.close()
 
