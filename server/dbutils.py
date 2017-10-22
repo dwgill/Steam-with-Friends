@@ -19,14 +19,14 @@ def map_md_row_to_dict(game_md_row):
         'multiplayer': bool(game_md_row[11]),
     }
 
-def map_user_md_ro_to_dict(user_md_row):
-    return{
+def map_user_md_row_to_dict(user_md_row):
+    return {
         'steamid': user_md_row[1],
         'avatar': user_md_row[2],
         'username': user_md_row[3],
         'profile_url': user_md_row[4],
         'name': user_md_row[5]
-        }
+    }
 
 def get_cached_md_for_games(steamGame_ids,sql_db_file):
     games_not_found_in_db = { str(appid): True for appid in steamGame_ids }
@@ -64,35 +64,35 @@ def get_cached_md_for_games(steamGame_ids,sql_db_file):
     #  foo = 1/0
     return game_datas, list(games_not_found_in_db.keys())
 
-def get_cached_md_for_users(steamIds,sql_db_file):
-    missing = []
-    metadata = {}
-
+def get_cached_md_for_users(steamIds, sql_db_file):
     if not os.path.isfile(sql_db_file):
         createDB(sql_db_file)
-        missing = steamGame_ids
-        return metadata, missing
-    
+        return [], steamIds
+
+    users_not_found_in_db = { str(steamid): True for steamid in steamIds }
+
     conn = sqlite3.connect(sql_db_file)
     cur = conn.cursor()
-    
-    for id in steamIds:
-        row = cur.execute("Select * from Users where SteamId=" + str(id))
-        record = row.fetchone()
-        if record == None:
-            missing.append(id)
-        else:
-            gamesList = []
 
-            rows = cur.execute("Select gameId from GameToUsers where userId=" +str(record[0]))
-            for val in rows.fetchall():
-                row = cur.execute("Select gameId from Game where id =" + str(val[0]))
-                record = row.fetchone()
-                gamesList.append(record[0])
+    select_q = "SELECT * FROM Users WHERE steamid IN ({arg_seq})"
 
-            record = (record,gamesList)
-            metadata[id] = record
-    return metadata,missing
+    arg_seq = ', '.join(['?'] * len(steamIds)) # '?, ?, ?, ...'
+
+    select_q = select_q.format(arg_seq=arg_seq)
+    # "SELECT * FROM Users WHERE steamid in (?, ?, ?, ...)"
+
+    rows = cur.execute(select_q, tuple(map(str, steamIds)))
+
+    user_summaries = []
+
+    for row in rows.fetchall():
+        user_summary = map_user_md_row_to_dict(row)
+        user_summaries.append(user_summary)
+        if str(user_summary['steamid']) in users_not_found_in_db:
+            del users_not_found_in_db[str(str(user_summary['steamid']))]
+
+    conn.close()
+    return user_summaries, list(users_not_found_in_db.keys())
 
 def storeGameDatas(game_metaDatas, sql_db_file):
     if not os.path.isfile(sql_db_file):
@@ -106,7 +106,7 @@ def storeGameDatas(game_metaDatas, sql_db_file):
     conn.commit()
     conn.close()
 
-def storeUserDatas(userDatas,sql_db_file):
+def storeUserDatas(userDatas, sql_db_file):
     if not os.path.isfile(sql_db_file):
         createDB(sql_db_file)
     conn = sqlite3.connect(sql_db_file)

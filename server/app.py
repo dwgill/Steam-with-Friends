@@ -18,16 +18,15 @@ def get_games():
 
     params = (parse_param(param) for param in params)
 
-    steamids = (identifier if is_steam_id else util.resolve_vanity_id(identifier)
+    steamids = [identifier if is_steam_id else util.resolve_vanity_id(identifier)
                 for (identifier, is_steam_id)
-                in params)
+                in params]
 
-    users_and_games = ( (util.get_user_summary(steamid), util.get_games_owned_by_user_web(steamid))
-             for steamid in steamids)
+    user_summaries = util.get_user_summaries(steamids)
 
-    users, game_lists = zip(*users_and_games)
+    lists_of_appids = [util.get_games_owned_by_user_web(steamid) for steamid in steamids]
 
-    games_owned_by_all = util.intersect_game_lists(game_lists)
+    games_owned_by_all = util.intersect_game_lists(lists_of_appids)
 
     games_owned_by_all = util.get_data_for_games(games_owned_by_all)
 
@@ -35,8 +34,9 @@ def get_games():
 
 
     return jsonify({
-        'users': users,
+        'users': list(user_summaries),
         'games': list(multi_games_owned_by_all),
+        'status': 'success',
     })
 
 def parse_param(param):

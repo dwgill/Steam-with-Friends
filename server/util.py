@@ -55,8 +55,21 @@ def get_games_owned_by_user_web(user_steamid, include_free=False):
             in request.json()['response']['games']]
 
 
+def get_cached_user_summaries(steamids):
+    return dbutils.get_cached_md_for_users(steamids, DATABASE_PATH)
+
+def get_user_summaries(steamids):
+    user_summaries, cache_misses = get_cached_user_summaries(steamids)
+
+    fetched_misses = [ get_user_summary_web(steamid) for steamid in cache_misses ]
+
+    dbutils.storeUserDatas(fetched_misses, DATABASE_PATH)
+
+    return itertools.chain(user_summaries, cache_misses)
+
+
 @functools.lru_cache(maxsize=16384)
-def get_user_summary(user_steamid):
+def get_user_summary_web(user_steamid):
     request = requests.get('https://api.steampowered.com/ISteamUser/GetPlayerSummaries/v0002',
                            params={
                                'key': STEAM_API_KEY,
