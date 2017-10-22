@@ -1,9 +1,8 @@
 <div class="game-list-container">
-        <md-progress-linear class="main-loader" ng-hide="gamesLoaded" md-mode="indeterminate"></md-progress-linear>
         <md-grid-list ng-show="gamesLoaded"  md-cols-xs="1" md-cols-sm="2" md-cols-md="4" md-cols-gt-md="6" md-row-height-gt-md="1:1" md-row-height="2:2" md-gutter="14px" md-gutter-gt-sm="10px">
-                <md-grid-tile ng-click="moreDetails(game)"  md-colspan="{{game.span || 1}}"  md-rowspan="{{game.span || 1}}" ng-repeat="game in commonGames" ng-style="{'background-image': 'url({{ ::game.image}})'}" >
+                <md-grid-tile ng-click="moreDetails(game)"  md-colspan="{{game.spanCol || 2}}"  md-rowspan="{{game.spanRow || 1}}" ng-repeat="game in commonGames | gameFilter:selectedTags:selectedGenres" ng-style="{'background-image': 'url({{ ::game.image}})'}" >
                     <md-progress-circular ng-show="false"  md-mode="indeterminate"></md-progress-circular>
-                    <md-grid-tile-header class="header-details " ng-show="game.span > 1">
+                    <md-grid-tile-header class="header-details " ng-show="game.spanRow > 1">
                         <h3>Developer: {{::game.developer}}</h3>
                         <h3>Publisher:  {{::game.publisher}}</h3>
                         <h3>Owners: {{::game.global_owners}}</h3>
@@ -18,7 +17,7 @@
                         </div>
                     </md-grid-tile-header>
                     <md-grid-tile-footer>
-                            <h3 ><a target="_blank" ng-href="{{game.store_page}}"> {{ ::game.name }}</a></h3>
+                            <h3 ><a target="_blank" ng-href="{{::game.store_page}}"> {{ ::game.name }}</a></h3>
                     </md-grid-tile-footer>
                 </md-grid-tile>
         </md-grid-list>

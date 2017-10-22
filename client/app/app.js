@@ -5,7 +5,8 @@ angular.module('steam-with-friends', [
     'ngSanitize',
     'ui.router',
     'ngMaterial',
-    'material.svgAssetsCache'
+    'material.svgAssetsCache',
+    'ngTagsInput'
 ]);
 angular.module('steam-with-friends').run();
 
