@@ -1,6 +1,7 @@
 from flask import Flask, request, jsonify
 from flask_cors import CORS
 import util
+import dbutils
 
 app = Flask(__name__)
 cors = CORS(app, resources={r"/get-games*": {"origins": "*"}})
@@ -21,25 +22,21 @@ def get_games():
                 for (identifier, is_steam_id)
                 in params)
 
-    users_and_games = ( (util.get_user_summary(steamid), util.get_games_owned_by_user(steamid))
+    users_and_games = ( (util.get_user_summary(steamid), util.get_games_owned_by_user_web(steamid))
              for steamid in steamids)
 
     users, game_lists = zip(*users_and_games)
 
     games_owned_by_all = util.intersect_game_lists(game_lists)
 
-    games_owned_by_all = ( util.get_game_datas(appid) for appid in games_owned_by_all )
+    games_owned_by_all = util.get_data_for_games(games_owned_by_all)
 
-    multi_games_of_all = (util.consolidate_game_data(steam_data, steamspy_data)
-                          for (steam_data, steamspy_data)
-                          in games_owned_by_all
-                          if util.is_game_multiplayer(steam_data, steamspy_data))
+    multi_games_owned_by_all = filter(lambda gdata: gdata['multiplayer'], games_owned_by_all)
 
 
     return jsonify({
         'users': users,
-        #  'games': list(map(util.get_game_info, games_owned_by_all)),
-        'games': list(multi_games_of_all),
+        'games': list(multi_games_owned_by_all),
     })
 
 def parse_param(param):

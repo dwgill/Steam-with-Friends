@@ -1,8 +1,13 @@
-import requests
-import re
+import dbutils
 import functools
+import os
+import re
+import requests
+import itertools
 
 STEAM_API_KEY = '576C821F7F6F425E341F9955224C9FEE'
+DATABASE_PATH = os.getenv('DB_PATH', './data.db')
+
 
 def parseUrl(url):
     '''
@@ -34,7 +39,7 @@ def resolve_vanity_id(vanity_id):
     return request.json()['response']['steamid']
 
 @functools.lru_cache(maxsize=128)
-def get_games_owned_by_user(user_steamid, include_free=False):
+def get_games_owned_by_user_web(user_steamid, include_free=False):
     include_free = 'true' if include_free else 'false'
     parameters = {
         'key': STEAM_API_KEY,
@@ -57,11 +62,17 @@ def get_user_summary(user_steamid):
                                'key': STEAM_API_KEY,
                                'steamids': user_steamid,
                            })
+    user_data = request.json()['response']['players'][0]
 
-    return request.json()['response']['players'][0]
+    return {
+        'steamid': user_data.get('steamid'),
+        'avatar': user_data.get('avatarfull'),
+        'username': user_data.get('personaname'),
+        'profile_url': user_data.get('profileurl'),
+        'name': user_data.get('realname'),
+    }
 
-@functools.lru_cache(maxsize=16384)
-def get_game_datas(appid):
+def get_datas_for_game_web(appid):
     steamspy_request = requests.get('https://steamspy.com/api.php',
                                     params={
                                         'request': 'appdetails',
@@ -74,10 +85,41 @@ def get_game_datas(appid):
                                      'key': STEAM_API_KEY,
                                      'appids': appid,
                                  })
-    steam_data = steam_request.json()[str(appid)].get('data', {})
+    steam_data = steam_request.json().get(str(appid), {}).get('data', {})
 
     return (steam_data, steamspy_data)
 
+@functools.lru_cache(maxsize=16384)
+def get_formatted_data_for_game(appid):
+    steam_data, steamspy_data = get_datas_for_game_web(appid)
+    return consolidate_game_data(steam_data, steamspy_data)
+
+
+def get_cached_game_datas(appids):
+    return dbutils.get_cached_md_for_games(appids, DATABASE_PATH)
+
+def get_data_for_games(appids):
+    cached_game_datas, cache_misses = get_cached_game_datas(appids)
+    
+    fetched_misses = ( get_formatted_data_for_game(appid) for appid in cache_misses )
+
+    all_fetched = []
+    fetched_batch = []
+    #  foo = 1/0
+    for fetched_data in fetched_misses:
+        all_fetched.append(fetched_data)
+        fetched_batch.append(fetched_data)
+
+        if len(fetched_batch) > 30:
+            dbutils.storeGameDatas(fetched_batch, DATABASE_PATH)
+            fetched_batch = []
+
+    if fetched_batch:
+        dbutils.storeGameDatas(fetched_batch, DATABASE_PATH)
+
+    #  foo = 1/0
+
+    return itertools.chain(cached_game_datas, fetched_misses)
 
 def derive_store_page_from_appid(appid):
     return 'http://store.steampowered.com/app/' + str(appid)
@@ -126,6 +168,12 @@ def consolidate_game_data(steam_data, steamspy_data):
 
     store_page = derive_store_page_from_appid(steamspy_data.get('appid'))
 
+    price = steam_data.get('price_overview', {}).get('initial') or steam_data.get('price_overview', {}).get('final')
+
+    tags = steamspy_data.get('tags', [])
+    if isinstance(tags, dict):
+        tags = list(tags.keys())
+
     return { # Example data for Dungeon Defenders
         'name': steam_data.get('name'),                         # 'Dungeon Defenders'
         'appid': steam_data.get('steam_appid',                  # 65800
@@ -133,12 +181,13 @@ def consolidate_game_data(steam_data, steamspy_data):
         'image': steam_data.get('header_image'),                # https://etc...
         'platforms': platforms,                                 # ['Windows', 'Linux', ...]
         'genres': genres,                                       # ['Action', 'Indie', ...]
-        'tags': list(steamspy_data.get('tags', {}).keys()),     # ['Tower Defense', 'RPG', ...]
+        'tags': tags,                                           # ['Tower Defense', 'RPG', ...]
         'global_owners': steamspy_data.get('owners'),           # 2046279
         'developer': steamspy_data.get('developer'),            # 'Trendy Entertainment'
         'publisher': steamspy_data.get('publisher'),            # 'Trendy Entertainment'
         'store_page': store_page,                               # https://etc...
-        'price': steam_data.get('price_overview', {}).get('final'), # 1599
+        'price': price,                                         # 1599
+        'multiplayer': is_game_multiplayer(steam_data, steamspy_data),
     }
 
 def intersect_game_lists(game_lists):
@@ -147,6 +196,6 @@ def intersect_game_lists(game_lists):
         return first_list
     else:
         first_set = set(first_list)
-        rest_sets = (set(game_list) for game_list in rest)
+        rest_sets = map(set, rest)
         return first_set.intersection(*rest_sets)
 
