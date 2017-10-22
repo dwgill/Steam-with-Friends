@@ -80,6 +80,12 @@ module.exports = function(grunt) {
             }
           }
         },
+		mainFiles: {
+			"font-awesome": 'font-awesome/css/font-awesome.css'
+		},
+		exclude: 
+			["font-awesome"]
+		,
         copy:{
           dist:{
             files: [{
