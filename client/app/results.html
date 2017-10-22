@@ -1,7 +1,7 @@
 <a class="back-link" ng-click="goBack()">Go Back To Search</a>
 <div class="comparisons">
     <div class="card-container">
-        <div  ng-repeat="userInfo in data">
+        <div class="card-container-container" ng-repeat="userInfo in data">
             <div ng-include="'/views/userCard.html'"></div>
         </div>
     </div>
