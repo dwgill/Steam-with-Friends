@@ -4,10 +4,18 @@
 angular.module('steam-with-friends')
 
     .controller('ResultsController', function ($scope, SteamApi, $state, $location) {
+        $scope.tags = [];
+        $scope.genres = [];
         if($state.params.users && $state.params.users.length ){
             SteamApi.getData().get({users: $state.params.users.toString()}).$promise.then(function(response){
                 $scope.data = response.users;
                 $scope.gamesLoaded = true;
+                $scope.tags = _.reduce(response.games, function(tags, game){
+                    return _.union(tags, game.tags);
+                }, []);
+                $scope.genres = _.reduce(response.games, function(genres, game){
+                    return _.union(genres, game.genres);
+                }, []);
                 $scope.commonGames =  response.games;
             });
         } else{
