@@ -19,6 +19,15 @@ def map_md_row_to_dict(game_md_row):
         'multiplayer': bool(game_md_row[11]),
     }
 
+def map_user_md_ro_to_dict(user_md_row):
+    return{
+        'steamid': user_md_row[1],
+        'avatar': user_md_row[2],
+        'username': user_md_row[3],
+        'profile_url': user_md_row[4],
+        'name': user_md_row[5]
+        }
+
 def get_cached_md_for_games(steamGame_ids,sql_db_file):
     games_not_found_in_db = { str(appid): True for appid in steamGame_ids }
     
