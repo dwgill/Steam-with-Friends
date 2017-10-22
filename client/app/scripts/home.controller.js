@@ -4,8 +4,9 @@
 angular.module('steam-with-friends')
 
     .controller('HomeController', function ($scope, $state) {        
-        if($state.params.users && $state.params.users.length ){
-            $scope.users = $state.params.users.map(function(id){
+        if($state.params.users && $state.params.users.length){
+            $scope.users = typeof $state.params.users === "string" ? [{id: $state.params.users}] :
+            $state.params.users.map(function(id){
                 return {id: id};
             });
             $scope.users.push({id: ''});
