@@ -7,13 +7,20 @@
 		height: 100px;
     }
     md-grid-tile {
-        transition: all 400ms ease-out 50ms; 
+        transition: all 400ms ease-out 50ms;
         background-position: center; 
         background-size: cover;
         background-repeat: no-repeat;
         .header-details{
             height: calc(~'100% - 48px');
-            transition: all 400ms ease-out 50ms; 
+            
         }
+        font-weight: 600;
     }
+   md-grid-tile-header, md-grid-tile-footer{
+    .item-group{
+        margin: 0 16px 0 16px;
+    }
+    background: rgba(0, 0, 0, 0.50);
+   }
 }

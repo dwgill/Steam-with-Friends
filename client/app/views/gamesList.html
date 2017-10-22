@@ -2,7 +2,18 @@
         <md-grid-list  md-cols-xs="1" md-cols-sm="2" md-cols-md="4" md-cols-gt-md="6" md-row-height-gt-md="1:1" md-row-height="2:2" md-gutter="14px" md-gutter-gt-sm="10px">
                 <md-grid-tile ng-click="moreDetails(game)"  md-colspan="{{game.span || 1}}"  md-rowspan="{{game.span || 1}}" ng-repeat="game in commonGames" ng-style="{'background-image': 'url({{ game.image}})'}" >
                     <md-grid-tile-header class="header-details " ng-show="game.span > 1">
-                        <h3>This is a header</h3>
+                        <h3>Developer: {{game.developer}}</h3>
+                        <h3>Publisher:  {{game.publisher}}</h3>
+                        <h3>Owners: {{game.global_owners}}</h3>
+                        <h3>Price: {{game.price / 100 | currency}}</h3>
+                        <div class="item-group">
+                            <label>Genres: </label>
+                            <span>{{ listItems(game.genres) }}</span>
+                        </div>
+                        <div  class="item-group">
+                            <label>Tags: </label>                                
+                            <span>{{ listItems(game.tags)  }}</span>
+                        </div>
                     </md-grid-tile-header>
                     <md-grid-tile-footer>
                             <h3 ><a target="_blank" ng-href="{{game.store_page}}"> {{ game.name }}</a></h3>

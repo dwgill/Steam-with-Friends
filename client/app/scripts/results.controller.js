@@ -21,5 +21,9 @@ angular.module('steam-with-friends')
         $scope.moreDetails = function(game){
             game.span = game.span === 2 ? 1 : 2;
         };
+
+        $scope.listItems = function(items){
+            return items.join(" ");
+        };
         
     });
