@@ -16,6 +16,31 @@
 	margin:20px
 }
 
+.card-homepage {  
+  //@include dimensions( 500px,  100px);
+  	width: 100%;
+	border: 1px solid black;
+	background-color: @peach;
+	margin:20px
+  padding: 20px;
+  border-radius: 3px;
+  background-color: white;
+  box-shadow: 0px 10px 20px rgba(0,0,0,0.2);
+  position: relative;
+  overflow: hidden;
+  &:after {
+    content: '';
+    display: block;
+    width: 190px;
+    height: 300px;
+    background: @light-red-ochre;
+		z-index: -5;
+    
+    position: absolute;
+    animation: rotatemagic 0.75s cubic-bezier(0.425, 1.040, 0.470, 1.105) 1s both;
+  }
+}
+
 .card.ng-leave.ng-leave-active,
 .card.ng-move,
 .card.ng-enter {

@@ -6,14 +6,38 @@
 @peach: #FFF3B0;
 @tigers-eye: #E09F3E;
 
+.steaminfo{
+	background-color: @light-red-ochre !important;
+}
+.filters{
+	background-color: @peach !important;
+}
+.results{
+	background-color: @vivid-cerulean !important;
+}
+
+.home-page-card-container.row{
+	display: flex;
+	align-items: stretch;
+	margin-left: 0;
+    margin-right: 0;
+	justify-content: space-between;
+}
+
 .homepage-textbox{
 	width: calc(~'33% - 20px') !important;
     margin-right: 20px;
 }
 
+.subheader h3{	
+	font-weight: bold;
+}
 .subheader{
-	background-color: @tigers-eye;
+	// background-color: @tigers-eye !important;
 	border-radius: 4px;
+	width: calc(~'33% - 40px') !important;
+	
+	overflow: visible;
 }
 .input-form-container{
 	background: #FCFCFC;
@@ -136,7 +160,7 @@ html, body.default{
 
 .header-section{
 	// background: url(./images/pc.png) repeat 0 0;
-	background: @tigers-eye;
+	background: @deep-space-sparkle !important;
 }
 
 .color-white{
