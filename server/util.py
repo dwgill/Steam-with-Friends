@@ -98,9 +98,11 @@ def get_datas_for_game_web(appid):
                                      'key': STEAM_API_KEY,
                                      'appids': appid,
                                  })
-    steam_data = steam_request.json().get(str(appid), {}).get('data', {})
-
-    return (steam_data, steamspy_data)
+    if steam_request:
+        steam_data = steam_request.json().get(str(appid), {}).get('data', {})
+        return (steam_data, steamspy_data)
+    else:
+        return None, None
 
 @functools.lru_cache(maxsize=16384)
 def get_formatted_data_for_game(appid):
@@ -116,6 +118,7 @@ def get_data_for_games(appids):
     
     fetched_misses = ( get_formatted_data_for_game(appid) for appid in cache_misses )
 
+    fetched_misses = filter(None,fetched_misses)
     all_fetched = []
     fetched_batch = []
     #  foo = 1/0
@@ -170,6 +173,11 @@ def is_game_multiplayer(steam_data={}, steamspy_data={}):
 
 
 def consolidate_game_data(steam_data, steamspy_data):
+    if not steam_data:
+        return None
+    if not steamspy_data:
+        return None
+    
     platforms = [platform.capitalize()
                  for (platform, is_on)
                  in steam_data.get('platforms', {}).items()
