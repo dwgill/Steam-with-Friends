@@ -18,6 +18,8 @@ angular.module('steam-with-friends')
             $state.go('home', {users: $state.params.users});
         };
 
-        
+        $scope.moreDetails = function(game){
+            game.span = game.span === 2 ? 1 : 2;
+        };
         
     });

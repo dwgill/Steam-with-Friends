@@ -1,8 +1,11 @@
 <div class="game-list-container">
-        <md-grid-list  md-cols-xs="1" md-cols-sm="2" md-cols-md="4" md-cols-gt-md="6" md-row-height-gt-md="1:1" md-row-height="2:2" md-gutter="12px" md-gutter-gt-sm="8px">
-                <md-grid-tile ng-repeat="game in commonGames" ng-style="{'background-image': 'url({{ game.image}})'}" >
+        <md-grid-list  md-cols-xs="1" md-cols-sm="2" md-cols-md="4" md-cols-gt-md="6" md-row-height-gt-md="1:1" md-row-height="2:2" md-gutter="14px" md-gutter-gt-sm="10px">
+                <md-grid-tile ng-click="moreDetails(game)"  md-colspan="{{game.span || 1}}"  md-rowspan="{{game.span || 1}}" ng-repeat="game in commonGames" ng-style="{'background-image': 'url({{ game.image}})'}" >
+                    <md-grid-tile-header class="header-details " ng-show="game.span > 1">
+                        <h3>This is a header</h3>
+                    </md-grid-tile-header>
                     <md-grid-tile-footer>
-                            <h3>{{ game.name }}</h3>
+                            <h3 ><a target="_blank" ng-href="{{game.store_page}}"> {{ game.name }}</a></h3>
                     </md-grid-tile-footer>
                 </md-grid-tile>
         </md-grid-list>
