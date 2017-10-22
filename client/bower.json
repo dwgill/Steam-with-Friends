@@ -27,6 +27,7 @@
     "bootstrap-less": "^3.3.4",
     "lodash": "^4.17.4",
     "angular-ui-router": "^1.0.10",
-    "angular-material": "^1.1.5"
+    "angular-material": "^1.1.5",
+    "ng-tags-input": "3.2.0"
   }
 }

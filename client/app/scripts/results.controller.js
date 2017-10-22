@@ -6,6 +6,8 @@ angular.module('steam-with-friends')
     .controller('ResultsController', function ($scope, SteamApi, $state, $location) {
         $scope.tags = [];
         $scope.genres = [];
+        $scope.selectedTags = [];
+        $scope.selectedGenres = [];
         if($state.params.users && $state.params.users.length ){
             SteamApi.getData().get({users: $state.params.users.toString()}).$promise.then(function(response){
                 $scope.data = response.users;
