@@ -4,8 +4,16 @@
 angular.module('steam-with-friends')
 
     .controller('HomeController', function ($scope, $state) {        
+        if($state.params.users && $state.params.users.length ){
+            $scope.users = $state.params.users.map(function(id){
+                return {id: id};
+            });
+            $scope.users.push({id: ''});
+        }else {
+            $scope.users = [{id: ''}];
+        }
 
-        $scope.users = [{id: ''}];
+        
         
         $scope.addNewUser = function() {
             if($scope.users[$scope.users.length - 1].id !== ""){

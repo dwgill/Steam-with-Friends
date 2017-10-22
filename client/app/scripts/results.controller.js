@@ -14,6 +14,9 @@ angular.module('steam-with-friends')
             $state.go('home');
         }
         
+        $scope.goBack = function(){
+            $state.go('home', {users: $state.params.users});
+        };
 
         
         

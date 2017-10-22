@@ -13,7 +13,7 @@ angular.module('steam-with-friends').config(function($urlRouterProvider, $stateP
     var basePath = window.location.pathname.split('/')[1];
     var slash = basePath ? "/" : "";
     $stateProvider.state('home', {
-        url: slash + 'home',
+        url: slash + 'home?users',
         views:{
             body:{
                 templateUrl: 'home.html',
