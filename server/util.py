@@ -39,7 +39,7 @@ def resolve_vanity_id(vanity_id):
     return request.json()['response']['steamid']
 
 @functools.lru_cache(maxsize=128)
-def get_games_owned_by_user(user_steamid, include_free=False):
+def get_games_owned_by_user_web(user_steamid, include_free=False):
     include_free = 'true' if include_free else 'false'
     parameters = {
         'key': STEAM_API_KEY,

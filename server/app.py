@@ -22,7 +22,7 @@ def get_games():
                 for (identifier, is_steam_id)
                 in params)
 
-    users_and_games = ( (util.get_user_summary(steamid), util.get_games_owned_by_user(steamid))
+    users_and_games = ( (util.get_user_summary(steamid), util.get_games_owned_by_user_web(steamid))
              for steamid in steamids)
 
     users, game_lists = zip(*users_and_games)
