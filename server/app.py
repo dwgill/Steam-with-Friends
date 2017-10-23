@@ -1,10 +1,13 @@
 from flask import Flask, request, jsonify
-from flask_cors import CORS
 import util
 import dbutils
+import os
 
 app = Flask(__name__)
-cors = CORS(app, resources={r"/get-games*": {"origins": "*"}})
+
+if os.getenv('ENV', '') == 'DEV':
+    from flask_cors import CORS
+    cors = CORS(app, resources={r"/get-games*": {"origins": "*"}})
 
 def error(msg, status=400):
     return jsonify({
@@ -65,5 +68,8 @@ def parse_param(param):
         raise util.CannotDetermineSteamId(Param)
 
 if __name__ == '__main__':
-    app.run()
+    if os.getenv('ENV', '') == 'DEV':
+        app.run(debug=True)
+    else:
+        app.run()
 
