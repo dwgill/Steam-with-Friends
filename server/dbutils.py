@@ -61,7 +61,6 @@ def get_cached_md_for_games(steamGame_ids,sql_db_file):
 
     conn.close()
 
-    #  foo = 1/0
     return game_datas, list(games_not_found_in_db.keys())
 
 def get_cached_md_for_users(steamIds, sql_db_file):
@@ -156,7 +155,7 @@ def createDB(sql_db_file):
     cur.execute("""CREATE TABLE `Game` (
 	id	INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT UNIQUE,
 	name	TEXT,
-	appid	INTEGER,
+	appid	INTEGER UNIQUE,
 	image	TEXT,
 	platforms  TEXT,
         genres TEXT,
@@ -164,17 +163,8 @@ def createDB(sql_db_file):
 	global_owners	INTEGER,
 	developer TEXT,
 	publisher TEXT,
-	price TEXT,
+	price INTEGER,
         multiplayer INTEGER
-)""")
-
-    cur.execute("""CREATE TABLE `GameToUsers` (
-	`Id`	INTEGER NOT NULL,
-	`gameId`	INTEGER,
-	`userId`	INTEGER,
-	FOREIGN KEY(`gameId`) REFERENCES `Game`(`id`),
-	PRIMARY KEY(`Id`),
-	FOREIGN KEY(`userId`) REFERENCES `Users`(`Id`)
 )""")
 
     cur.execute("""CREATE TABLE `Users` (

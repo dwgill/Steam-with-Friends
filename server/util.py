@@ -36,7 +36,7 @@ def resolve_vanity_id(vanity_id):
                      'key': STEAM_API_KEY,
                      'vanityurl': vanity_id,
                  })
-    if not request or request.json().get('response', {}).get('message', {}).lower() == 'no match':
+    if not request or request.json().get('response', {}).get('message', '').lower() == 'no match':
         raise CannotDetermineSteamId(vanity_id)
     return request.json()['response']['steamid']
 
@@ -109,7 +109,7 @@ def get_datas_for_game_web(appid):
 @functools.lru_cache(maxsize=16384)
 def get_formatted_data_for_game(appid):
     steam_data, steamspy_data = get_datas_for_game_web(appid)
-    return consolidate_game_data(steam_data, steamspy_data)
+    return consolidate_game_data(appid, steam_data, steamspy_data)
 
 
 def get_cached_game_datas(appids):
@@ -120,10 +120,10 @@ def get_data_for_games(appids):
     
     fetched_misses = ( get_formatted_data_for_game(appid) for appid in cache_misses )
 
-    fetched_misses = filter(None,fetched_misses)
+    fetched_misses = filter(lambda x: x,fetched_misses)
     all_fetched = []
     fetched_batch = []
-    #  foo = 1/0
+
     for fetched_data in fetched_misses:
         all_fetched.append(fetched_data)
         fetched_batch.append(fetched_data)
@@ -134,8 +134,6 @@ def get_data_for_games(appids):
 
     if fetched_batch:
         dbutils.storeGameDatas(fetched_batch, DATABASE_PATH)
-
-    #  foo = 1/0
 
     return itertools.chain(cached_game_datas, fetched_misses)
 
@@ -174,10 +172,8 @@ def is_game_multiplayer(steam_data={}, steamspy_data={}):
     return False
 
 
-def consolidate_game_data(steam_data, steamspy_data):
-    if not steam_data:
-        return None
-    if not steamspy_data:
+def consolidate_game_data(appid, steam_data, steamspy_data):
+    if not steam_data and steamspy_data:
         return None
     
     platforms = [platform.capitalize()
@@ -189,7 +185,7 @@ def consolidate_game_data(steam_data, steamspy_data):
               for genre_entry
               in steam_data.get('genres', [])]
 
-    store_page = derive_store_page_from_appid(steamspy_data.get('appid'))
+    store_page = derive_store_page_from_appid(appid)
 
     price = steam_data.get('price_overview', {}).get('initial') or steam_data.get('price_overview', {}).get('final')
 
@@ -199,8 +195,7 @@ def consolidate_game_data(steam_data, steamspy_data):
 
     return { # Example data for Dungeon Defenders
         'name': steam_data.get('name'),                         # 'Dungeon Defenders'
-        'appid': steam_data.get('steam_appid',                  # 65800
-                                steamspy_data.get('appid')),
+        'appid': appid,                                         # 65800
         'image': steam_data.get('header_image'),                # https://etc...
         'platforms': platforms,                                 # ['Windows', 'Linux', ...]
         'genres': genres,                                       # ['Action', 'Indie', ...]
